@@ -58,7 +58,7 @@ prescribed type signature, the inner logic of the `fmt` function can act however
 This is why the `Display` trait in particular cannot be automatically derived: there's no 
 sensible default to fall back to for arbitrary types. 
 
-## Trait Bounds
+## Using Traits
 We've talked about how to implement traits, but why do we even need to implement traits
 for our types in the first place?  
 
@@ -66,8 +66,17 @@ Another way to think about traits is as encapsulating _functionality_, compared 
 object-oriented paradigm, where _objects_ are encapsulated. Traits encapsulate patterns
 of functionality.
 
-One common example is the standard library's `HashMap` collection, which requires that any
-keys we wish to insert implement the `Eq` and `Hash` traits. In other words, any type that
-we want to insert as keys into a `HashMap` need a notion of equality over the type, and 
-the type also needs to be hashable, such that they can be transformed into some hash value
-to be inserted into the `HashMap`. 
+For example, if we want to implement a generic sorting algorithm that takes as input a 
+slice of some type `T`, our algorithm wouldn't know what to do with types that don't have
+some notion of order attached to them. This is where _trait bounds_ come in. They allow us
+to specify particular traits that we require of input types to some function. 
+
+The standard library exports the `Ord` trait for encapsulating the notion of ordering.
+We can use it to constrain the kinds of types that our implementation will accept:
+```rust
+use std::cmp;
+
+fn sort<T: cmp::Ord>(items: &mut [T]) 
+```
+
+We can even place multiple trait bounds on generic types!
